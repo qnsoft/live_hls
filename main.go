@@ -5,6 +5,8 @@ import (
 	"compress/gzip"
 	"context"
 	"fmt"
+	. "github.com/qnsoft/live_sdk"
+	"github.com/qnsoft/live_utils/codec/mpegts"
 	"io"
 	"io/ioutil"
 	"log"
@@ -14,13 +16,10 @@ import (
 	"strings"
 	"sync"
 	"time"
-	. "github.com/qnsoft/live_sdk"
-	. "github.com/qnsoft/live_utils
-	"github.com/qnsoft/live_utils/codec/mpegts"
 
-
+	"github.com/qnsoft/live_m3u8"
 	. "github.com/qnsoft/live_ts"
-	"github.com/qnsoft/live_m3u8/m3u8"
+	. "github.com/qnsoft/live_utils"
 )
 
 var collection sync.Map
@@ -137,13 +136,13 @@ type TSCost struct {
 	BufferLength int
 }
 
-func readM3U8(res *http.Response) (playlist *m3u8.Playlist, err error) {
+func readM3U8(res *http.Response) (playlist *live_m3u8.Playlist, err error) {
 	var reader io.Reader = res.Body
 	if res.Header.Get("Content-Encoding") == "gzip" {
 		reader, err = gzip.NewReader(reader)
 	}
 	if err == nil {
-		playlist, err = m3u8.Read(reader)
+		playlist, err = live_m3u8.Read(reader)
 	}
 	if err != nil {
 		log.Printf("readM3U8 error:%s", err.Error())
@@ -182,9 +181,9 @@ func (p *HLS) run(info *M3u8Info) {
 			discontinuity := false
 			for _, item := range playlist.Items {
 				switch v := item.(type) {
-				case *m3u8.DiscontinuityItem:
+				case *live_m3u8.DiscontinuityItem:
 					discontinuity = true
-				case *m3u8.SegmentItem:
+				case *live_m3u8.SegmentItem:
 					thisTs[v.Segment] = true
 					if _, ok := lastTs[v.Segment]; ok && !discontinuity {
 						continue
