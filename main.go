@@ -177,7 +177,7 @@ func (p *HLS) run(info *M3u8Info) {
 			info.M3U8Count++
 			sequence = playlist.Sequence
 			thisTs := make(map[string]bool)
-			tsItems := make([]*m3u8.SegmentItem, 0)
+			tsItems := make([]*live_m3u8.SegmentItem, 0)
 			discontinuity := false
 			for _, item := range playlist.Items {
 				switch v := item.(type) {

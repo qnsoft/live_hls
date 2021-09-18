@@ -3,6 +3,7 @@ package hls
 import (
 	"errors"
 	"fmt"
+	"github.com/qnsoft/live_utils"
 	"os"
 	"strconv"
 	"strings"
@@ -48,7 +49,7 @@ type PlaylistInf struct {
 func (this *Playlist) Init(filename string) (err error) {
 	defer this.handleError()
 
-	if utils.Exist(filename) {
+	if live_utils.Exist(filename) {
 		if err = os.Remove(filename); err != nil {
 			return
 		}
@@ -118,7 +119,7 @@ func (this *Playlist) UpdateInf(filename string, tmpFilename string, inf Playlis
 	defer tmpFile.Close()
 
 	var ls []string
-	if ls, err = utils.ReadFileLines(filename); err != nil {
+	if ls, err = live_utils.ReadFileLines(filename); err != nil {
 		return
 	}
 
@@ -184,7 +185,7 @@ func (this *Playlist) UpdateInf(filename string, tmpFilename string, inf Playlis
 
 func (this *Playlist) GetInfCount(filename string) (num int, err error) {
 	var ls []string
-	if ls, err = utils.ReadFileLines(filename); err != nil {
+	if ls, err = live_utils.ReadFileLines(filename); err != nil {
 		return
 	}
 
